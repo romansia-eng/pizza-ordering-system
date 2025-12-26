@@ -1,0 +1,19 @@
+{
+  "name": "الرومنسية - Al-Romansia Pizza",
+  "short_name": "الرومنسية",
+  "description": "أشهى البيتزا الإيطالية الأصلية",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1412",
+  "theme_color": "#dc2626",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ],
+  "lang": "ar",
+  "dir": "rtl"
+}
