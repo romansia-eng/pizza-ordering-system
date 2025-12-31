@@ -10,17 +10,21 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { z } from 'zod';
-
 const loginSchema = z.object({
   email: z.string().trim().email('البريد الإلكتروني غير صحيح'),
-  password: z.string().min(6, 'كلمة المرور يجب أن تكون 6 أحرف على الأقل'),
+  password: z.string().min(6, 'كلمة المرور يجب أن تكون 6 أحرف على الأقل')
 });
-
 const Auth: React.FC = () => {
-  const { signIn, user, isAdmin, isLoading } = useAuth();
-  const { language } = useLanguage();
+  const {
+    signIn,
+    user,
+    isAdmin,
+    isLoading
+  } = useAuth();
+  const {
+    language
+  } = useLanguage();
   const navigate = useNavigate();
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -33,28 +37,27 @@ const Auth: React.FC = () => {
       navigate('/admin');
     }
   }, [user, isAdmin, isLoading, navigate]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
     // Validate input
-    const validation = loginSchema.safeParse({ email, password });
+    const validation = loginSchema.safeParse({
+      email,
+      password
+    });
     if (!validation.success) {
       setError(validation.error.errors[0].message);
       return;
     }
-
     setLoading(true);
-
     try {
-      const { error: signInError } = await signIn(email, password);
-      
+      const {
+        error: signInError
+      } = await signIn(email, password);
       if (signInError) {
         if (signInError.message.includes('Invalid login')) {
-          setError(language === 'ar' 
-            ? 'البريد الإلكتروني أو كلمة المرور غير صحيحة'
-            : 'Invalid email or password');
+          setError(language === 'ar' ? 'البريد الإلكتروني أو كلمة المرور غير صحيحة' : 'Invalid email or password');
         } else {
           setError(signInError.message);
         }
@@ -65,19 +68,14 @@ const Auth: React.FC = () => {
       setLoading(false);
     }
   };
-
   if (isLoading) {
-    return (
-      <Layout>
+    return <Layout>
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         </div>
-      </Layout>
-    );
+      </Layout>;
   }
-
-  return (
-    <Layout>
+  return <Layout>
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-md mx-auto">
           <Card className="card-gradient border-border/50">
@@ -89,19 +87,15 @@ const Auth: React.FC = () => {
                 {language === 'ar' ? 'تسجيل الدخول' : 'Sign In'}
               </CardTitle>
               <CardDescription>
-                {language === 'ar' 
-                  ? 'أدخل بيانات الدخول للوصول للوحة التحكم'
-                  : 'Enter your credentials to access the admin panel'}
+                {language === 'ar' ? 'أدخل بيانات الدخول للوصول للوحة التحكم' : 'Enter your credentials to access the admin panel'}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
-                {error && (
-                  <Alert variant="destructive">
+                {error && <Alert variant="destructive">
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>{error}</AlertDescription>
-                  </Alert>
-                )}
+                  </Alert>}
 
                 <div className="space-y-2">
                   <Label htmlFor="email">
@@ -109,16 +103,7 @@ const Auth: React.FC = () => {
                   </Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="admin@romansia.com"
-                      className="pl-10"
-                      dir="ltr"
-                      autoComplete="email"
-                    />
+                    <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="admin@romansia.com" className="pl-10" dir="ltr" autoComplete="email" />
                   </div>
                 </div>
 
@@ -128,54 +113,23 @@ const Auth: React.FC = () => {
                   </Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="password"
-                      type={showPassword ? 'text' : 'password'}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="pl-10 pr-10"
-                      dir="ltr"
-                      autoComplete="current-password"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                    >
+                    <Input id="password" type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" className="pl-10 pr-10" dir="ltr" autoComplete="current-password" />
+                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
                   </div>
                 </div>
 
-                <Button
-                  type="submit"
-                  variant="pizza"
-                  className="w-full"
-                  disabled={loading}
-                >
-                  {loading 
-                    ? (language === 'ar' ? 'جاري الدخول...' : 'Signing in...')
-                    : (language === 'ar' ? 'دخول' : 'Sign In')}
+                <Button type="submit" variant="pizza" className="w-full" disabled={loading}>
+                  {loading ? language === 'ar' ? 'جاري الدخول...' : 'Signing in...' : language === 'ar' ? 'دخول' : 'Sign In'}
                 </Button>
               </form>
 
-              <div className="mt-6 p-4 bg-muted/50 rounded-lg">
-                <p className="text-sm text-muted-foreground text-center">
-                  {language === 'ar' 
-                    ? 'بيانات الدخول الافتراضية:'
-                    : 'Default admin credentials:'}
-                </p>
-                <p className="text-sm font-mono text-center mt-2" dir="ltr">
-                  admin@romansia.com / Admin123!
-                </p>
-              </div>
+              
             </CardContent>
           </Card>
         </div>
       </div>
-    </Layout>
-  );
+    </Layout>;
 };
-
 export default Auth;
